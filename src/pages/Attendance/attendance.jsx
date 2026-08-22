@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import './Attendance.css';
 import { db, auth } from '../../firebase';
 import { collection, addDoc, query, where, getDocs, serverTimestamp } from 'firebase/firestore';
-import './Attendance.css'; // Add this import line!
 
 const DUMMY_UID = "test-user-123";
 
@@ -17,10 +17,23 @@ export default function Attendance() {
       const q = query(collection(db, "attendance"), where("uid", "==", userId));
       const querySnapshot = await getDocs(q);
       const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+      // Sort by Firestore timestamp seconds, fallback to document index order
+      data.sort((a, b) => {
+        const timeA = a.timestamp?.seconds || (a.timestamp?.toMillis ? a.timestamp.toMillis() / 1000 : 0);
+        const timeB = b.timestamp?.seconds || (b.timestamp?.toMillis ? b.timestamp.toMillis() / 1000 : 0);
+        return timeA - timeB;
+      });
+
       setRecords(data);
+
       if (data.length > 0) {
+        // Pick the last logged record in array
         const latest = data[data.length - 1];
-        setStatus(latest.type === "Check-In" ? "Checked In" : "Checked Out");
+        
+        // Check string without case sensitivity or hyphen mismatch
+        const isCheckIn = latest.type?.toLowerCase().includes('in');
+        setStatus(isCheckIn ? 'Checked In' : 'Checked Out');
       }
     } catch (err) {
       console.error("Error fetching attendance:", err);
@@ -34,14 +47,19 @@ export default function Attendance() {
   const handleAction = async (type) => {
     setLoading(true);
     try {
+      const newStatus = type === 'Check-In' ? 'Checked In' : 'Checked Out';
+      
+      // Update UI state immediately for responsive feedback
+      setStatus(newStatus);
+
       await addDoc(collection(db, "attendance"), {
         uid: userId,
         type: type,
         timestamp: serverTimestamp(),
-        date: new Date().toLocaleDateString(),
+        date: new Date().toLocaleDateString('en-GB'),
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       });
-      setStatus(type === "Check-In" ? "Checked In" : "Checked Out");
+
       await fetchAttendance();
     } catch (err) {
       console.error("Error logging attendance:", err);
@@ -121,7 +139,7 @@ export default function Attendance() {
                 {records.slice().reverse().map((r) => (
                   <tr key={r.id}>
                     <td>
-                      <span className={`tag ${r.type === 'Check-In' ? 'tag-in' : 'tag-out'}`}>
+                      <span className={`tag ${r.type?.toLowerCase().includes('in') ? 'tag-in' : 'tag-out'}`}>
                         {r.type}
                       </span>
                     </td>
