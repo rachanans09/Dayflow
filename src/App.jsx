@@ -7,6 +7,7 @@ import Profile from "./pages/Profile/Profile";
 import Attendance from "./pages/Attendance/Attendance";
 import ApplyLeave from "./pages/Leave/ApplyLeave";
 import ApproveLeave from "./pages/Leave/ApproveLeave";
+import OnboardEmployee from "./pages/Profile/OnboardEmployee";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/attendance" element={<Attendance />} />
         <Route path="/apply-leave" element={<ApplyLeave />} />
         <Route path="/approve-leave" element={<ApproveLeave />} />
+        <Route path="/onboard-employee" element={<OnboardEmployee />} />
       </Routes>
     </BrowserRouter>
   );

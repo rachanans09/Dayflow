@@ -81,10 +81,16 @@ export default function Dashboard() {
         </Link>
 
         {role === "HR" && (
-          <Link to="/approve-leave" className="action-card" style={{ borderColor: "#818cf8" }}>
-            <h3>📋 Approve Leaves</h3>
-            <p>Review and approve pending team leave submissions.</p>
-          </Link>
+          <>
+            <Link to="/approve-leave" className="action-card" style={{ borderColor: "#818cf8" }}>
+              <h3>📋 Approve Leaves</h3>
+              <p>Review and approve pending team leave submissions.</p>
+            </Link>
+            <Link to="/onboard-employee" className="action-card" style={{ borderColor: "#818cf8" }}>
+              <h3>➕ Onboard Employee</h3>
+              <p>Pre-configure new hires with employee ID and role records.</p>
+            </Link>
+          </>
         )}
       </div>
     </div>
