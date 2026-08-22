@@ -28,10 +28,14 @@ export default function SignUp() {
 
       const onboardingSnap = await getDoc(doc(db, "onboarding", empId));
       if (onboardingSnap.exists()) {
-        await setDoc(doc(db, "profiles", cred.user.uid), {
-          ...onboardingSnap.data(),
-          email,
-        }, { merge: true });
+        await setDoc(
+          doc(db, "profiles", cred.user.uid),
+          {
+            ...onboardingSnap.data(),
+            email,
+          },
+          { merge: true }
+        );
       }
 
       toast.success("Account created successfully!");
@@ -44,18 +48,18 @@ export default function SignUp() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-slate-100 dark:from-slate-900 dark:to-slate-800 p-4">
+    <div className="w-screen min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-slate-50 to-indigo-100 dark:from-slate-900 dark:via-slate-850 dark:to-slate-900 p-4">
       <div className="w-full max-w-md">
-        <div className="text-center mb-6">
-          <div className="inline-flex items-center justify-center w-12 h-12 bg-indigo-600 text-white rounded-xl shadow-lg shadow-indigo-200 mb-3 text-xl">
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-14 h-14 bg-indigo-600 text-white rounded-2xl shadow-lg shadow-indigo-300 dark:shadow-none mb-4 text-2xl">
             ⚡
           </div>
-          <h1 className="text-2xl font-bold">Create Account</h1>
-          <p className="text-sm text-slate-500 mt-1">Get started with Dayflow HRMS</p>
+          <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-100">Create Account</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Get started with Dayflow HRMS</p>
         </div>
 
-        <Card>
-          <form onSubmit={handleSignUp} className="space-y-3">
+        <Card className="shadow-xl border-slate-200/80 dark:border-slate-750">
+          <form onSubmit={handleSignUp} className="space-y-4">
             <Input
               label="Employee ID"
               placeholder="e.g. EMP-101"
@@ -84,14 +88,14 @@ export default function SignUp() {
               <option value="Employee">Employee</option>
               <option value="HR">HR Administrator</option>
             </Select>
-            <Button type="submit" className="w-full mt-2" disabled={loading}>
+            <Button type="submit" className="w-full py-2.5 mt-2 shadow-md shadow-indigo-200 dark:shadow-none" disabled={loading}>
               {loading ? "Creating Account..." : "Create Account"}
             </Button>
           </form>
 
-          <div className="text-center mt-4 text-xs text-slate-500">
+          <div className="text-center mt-6 text-xs text-slate-500 dark:text-slate-400">
             Already have an account?{" "}
-            <Link to="/" className="text-indigo-600 font-semibold hover:underline">
+            <Link to="/" className="text-indigo-600 dark:text-indigo-400 font-semibold hover:underline">
               Sign in
             </Link>
           </div>

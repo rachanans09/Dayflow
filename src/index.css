@@ -26,20 +26,32 @@
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-body {
+html,
+body,
+#root {
+  width: 100%;
   min-height: 100vh;
-  background: var(--bg-gradient);
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  background: #f8fafc;
   color: var(--text-main);
+}
+
+/* Full-Screen Auth Pages Wrapper */
+.auth-page {
+  width: 100vw;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  background: var(--bg-gradient);
   padding: 1.5rem;
 }
 
 .auth-wrapper {
   width: 100%;
   max-width: 440px;
-  perspective: 1000px;
 }
 
 .auth-card {
@@ -169,15 +181,14 @@ body {
   text-decoration: underline;
 }
 
-/* Dashboard Styles */
+/* Full-Width Dashboard Container */
 .dashboard-container {
   width: 100%;
-  max-width: 900px;
   background: var(--surface);
   border-radius: var(--radius-lg);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-md);
-  padding: 2.5rem;
+  padding: 2rem;
 }
 
 .dashboard-nav {
@@ -200,8 +211,9 @@ body {
 
 .grid-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
 }
 
 .action-card {
