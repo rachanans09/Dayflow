@@ -3,11 +3,13 @@ import ApproveLeave from "./pages/Leave/ApproveLeave";
 
 export default function App() {
   return (
-    <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
-      <h1>Dayflow HRMS - Leave Management</h1>
-      <hr />
+    <div className="dashboard-container">
+      <header className="header">
+        <h1>Dayflow HRMS</h1>
+        <p>Manage employee leaves and request approvals seamlessly.</p>
+      </header>
+
       <ApplyLeave />
-      <hr />
       <ApproveLeave />
     </div>
   );
