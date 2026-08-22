@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import SignIn from "./pages/Auth/SignIn";
 import SignUp from "./pages/Auth/SignUp";
 import Profile from "./pages/Profile/Profile";
-import OnboardEmployee from "./pages/Profile/OnboardEmployee";
 import AttendanceDashboard from "./pages/Attendance/attendance";
 import ApplyLeave from "./pages/Leave/ApplyLeave";
 import ApproveLeave from "./pages/Leave/ApproveLeave";
@@ -56,7 +55,6 @@ export default function App() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/onboard" element={<OnboardEmployee />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
