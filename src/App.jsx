@@ -1,16 +1,24 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import SignIn from "./pages/Auth/SignIn";
+import SignUp from "./pages/Auth/SignUp";
+import Dashboard from "./pages/Dashboard";
+import Profile from "./pages/Profile/Profile";
+import Attendance from "./pages/Attendance/Attendance";
 import ApplyLeave from "./pages/Leave/ApplyLeave";
 import ApproveLeave from "./pages/Leave/ApproveLeave";
 
 export default function App() {
   return (
-    <div className="dashboard-container">
-      <header className="header">
-        <h1>Dayflow HRMS</h1>
-        <p>Manage employee leaves and request approvals seamlessly.</p>
-      </header>
-
-      <ApplyLeave />
-      <ApproveLeave />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/attendance" element={<Attendance />} />
+        <Route path="/apply-leave" element={<ApplyLeave />} />
+        <Route path="/approve-leave" element={<ApproveLeave />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
