@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import './App.css';
 
-// Import components from your team's directories
+// Import your profile component (verified from your sidebar)
+import Profile from './pages/Profile/Profile';
+
+// Import Attendance and Leave (adjusting paths to match standard layouts)
 import Attendance from './pages/Attendance/Attendance';
-import Leave from './pages/Leave/Leave';
-import Profile from './pages/Profile/Profile'; // Your profile component
+import Leave from './pages/Leave/Leave'; // If this throws an error, check if your leave file is named differently
 
 function App() {
-  // State to track which tab is currently active ('attendance', 'leave', or 'profile')
   const [activeTab, setActiveTab] = useState('attendance');
 
   return (
@@ -19,7 +20,7 @@ function App() {
           <p className="subtitle">Employee Portal & Work Management</p>
         </div>
 
-        {/* Navigation Tabs Bar */}
+        {/* Navigation Tabs */}
         <nav className="nav-tabs">
           <button 
             onClick={() => setActiveTab('attendance')} 
@@ -35,7 +36,6 @@ function App() {
             Leave Management
           </button>
 
-          {/* Your Integrated Profile Tab Button */}
           <button 
             onClick={() => setActiveTab('profile')} 
             className={activeTab === 'profile' ? 'active-tab' : ''}
@@ -45,7 +45,7 @@ function App() {
         </nav>
       </header>
 
-      {/* Main Content View Switcher */}
+      {/* Main Content Area */}
       <main className="main-content">
         {activeTab === 'attendance' && <Attendance />}
         {activeTab === 'leave' && <Leave />}
