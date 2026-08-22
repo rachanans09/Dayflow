@@ -1,98 +1,58 @@
-import React, { useState } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import SignIn from "./pages/Auth/SignIn";
-import SignUp from "./pages/Auth/SignUp";
-import Profile from "./pages/Profile/Profile";
-import AttendanceDashboard from "./pages/Attendance/attendance";
-import AdminAttendance from "./pages/Attendance/AdminAttendance";
-import ApplyLeave from "./pages/Leave/ApplyLeave";
-import ApproveLeave from "./pages/Leave/ApproveLeave";
+import React, { useState } from 'react';
+import './App.css';
 
-function Dashboard() {
-  const [activeTab, setActiveTab] = useState("attendance");
+// Import components from your team's directories
+import Attendance from './pages/Attendance/Attendance';
+import Leave from './pages/Leave/Leave';
+import Profile from './pages/Profile/Profile'; // Your profile component
+
+function App() {
+  // State to track which tab is currently active ('attendance', 'leave', or 'profile')
+  const [activeTab, setActiveTab] = useState('attendance');
 
   return (
-    <div style={layoutStyle}>
-      <div style={headerStyle}>
-        <h1 style={{ margin: 0, fontSize: "32px", fontWeight: "700" }}>
-          Dayflow HRMS
-        </h1>
-        <p style={{ margin: "4px 0 20px 0", color: "#94a3b8" }}>
-          Employee Portal & Work Management
-        </p>
-        <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
-          <button
-            onClick={() => setActiveTab("attendance")}
-            style={tabButtonStyle(activeTab === "attendance")}
-          >
-            ● Attendance
-          </button>
-          <button
-            onClick={() => setActiveTab("admin-attendance")}
-            style={tabButtonStyle(activeTab === "admin-attendance")}
-          >
-            🛡️ Admin Attendance
-          </button>
-          <button
-            onClick={() => setActiveTab("leave")}
-            style={tabButtonStyle(activeTab === "leave")}
-          >
-            📝 Leave Management
-          </button>
+    <div className="app-container">
+      {/* Header Section */}
+      <header className="app-header">
+        <div className="header-content">
+          <h1>Dayflow HRMS</h1>
+          <p className="subtitle">Employee Portal & Work Management</p>
         </div>
-      </div>
 
-      <div style={{ maxWidth: "800px", margin: "0 auto" }}>
-        {activeTab === "attendance" && <AttendanceDashboard />}
-        {activeTab === "admin-attendance" && <AdminAttendance />}
-        {activeTab === "leave" && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-            <ApplyLeave />
-            <ApproveLeave />
-          </div>
-        )}
-      </div>
+        {/* Navigation Tabs Bar */}
+        <nav className="nav-tabs">
+          <button 
+            onClick={() => setActiveTab('attendance')} 
+            className={activeTab === 'attendance' ? 'active-tab' : ''}
+          >
+            Attendance
+          </button>
+
+          <button 
+            onClick={() => setActiveTab('leave')} 
+            className={activeTab === 'leave' ? 'active-tab' : ''}
+          >
+            Leave Management
+          </button>
+
+          {/* Your Integrated Profile Tab Button */}
+          <button 
+            onClick={() => setActiveTab('profile')} 
+            className={activeTab === 'profile' ? 'active-tab' : ''}
+          >
+            Profile
+          </button>
+        </nav>
+      </header>
+
+      {/* Main Content View Switcher */}
+      <main className="main-content">
+        {activeTab === 'attendance' && <Attendance />}
+        {activeTab === 'leave' && <Leave />}
+        {activeTab === 'profile' && <Profile />}
+      </main>
     </div>
   );
 }
 
-export default function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/admin-attendance" element={<AdminAttendance />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
-  );
-}
-
-const layoutStyle = {
-  backgroundColor: "#0f172a",
-  color: "#f8fafc",
-  minHeight: "100vh",
-  padding: "40px 20px",
-  boxSizing: "border-box",
-};
-
-const headerStyle = {
-  textAlign: "center",
-  marginBottom: "32px",
-};
-
-const tabButtonStyle = (isActive) => ({
-  padding: "10px 24px",
-  borderRadius: "8px",
-  border: "none",
-  fontWeight: "600",
-  fontSize: "15px",
-  cursor: "pointer",
-  backgroundColor: isActive ? "#2563eb" : "#1e293b",
-  color: isActive ? "#ffffff" : "#94a3b8",
-  transition: "all 0.2s ease",
-});
+export default App;
