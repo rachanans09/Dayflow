@@ -1,47 +1,85 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
-// Auth
+// Authentication
 import SignIn from "./pages/Auth/SignIn";
 import SignUp from "./pages/Auth/SignUp";
 
-// Main Dashboard
+// Dashboard
 import Dashboard from "./pages/Dashboard";
 
-// Profile & Onboarding
+// Profile & Team Modules
 import Profile from "./pages/Profile/Profile";
+import AllEmployees from "./pages/Profile/AllEmployees";
 import OnboardEmployee from "./pages/Profile/OnboardEmployee";
 
-// Attendance & Analytics
+// Attendance & Analytics Modules (exact lowercase matching your filesystem)
 import Attendance from "./pages/Attendance/attendance";
-import Analytics from "./pages/Attendance/Analytics";
+import AdminAttendance from "./pages/Attendance/AdminAttendance";
+import Analytics from "./pages/Attendance/analytics";
 
-// Leaves
+// Leave Management Modules
 import ApplyLeave from "./pages/Leave/ApplyLeave";
 import ApproveLeave from "./pages/Leave/ApproveLeave";
-
-// Layout Wrapper
-import Layout from "./components/Layout";
 
 export default function App() {
   return (
     <BrowserRouter>
-      <Toaster position="top-right" />
+      {/* Toast Notification Provider */}
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 3500,
+          style: {
+            borderRadius: "12px",
+            background: "#1e293b",
+            color: "#fff",
+            fontSize: "13px",
+            fontWeight: "500",
+            boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.2)",
+          },
+          success: {
+            iconTheme: {
+              primary: "#10b981",
+              secondary: "#fff",
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: "#ef4444",
+              secondary: "#fff",
+            },
+          },
+        }}
+      />
+
       <Routes>
-        {/* Public Authentication */}
+        {/* Public Authentication Routes */}
         <Route path="/" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
 
-        {/* Protected Dashboard Routes */}
-        <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
-        <Route path="/profile" element={<Layout><Profile /></Layout>} />
-        <Route path="/attendance" element={<Layout><Attendance /></Layout>} />
-        <Route path="/analytics" element={<Layout><Analytics /></Layout>} />
-        <Route path="/apply-leave" element={<Layout><ApplyLeave /></Layout>} />
-        <Route path="/approve-leave" element={<Layout><ApproveLeave /></Layout>} />
-        <Route path="/onboard-employee" element={<Layout><OnboardEmployee /></Layout>} />
+        {/* Core Workspace & Dashboard */}
+        <Route path="/dashboard" element={<Dashboard />} />
 
-        {/* Catch-all fallback */}
+        {/* Profile & Employee Directory Routes */}
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/employee/:uid" element={<Profile />} />
+        <Route path="/all-employees" element={<AllEmployees />} />
+
+        {/* Attendance & HR Analytics Routes */}
+        <Route path="/attendance" element={<Attendance />} />
+        <Route path="/attendance/:uid" element={<Attendance />} />
+        <Route path="/admin-attendance" element={<AdminAttendance />} />
+        <Route path="/analytics" element={<Analytics />} />
+
+        {/* Leave Management Routes */}
+        <Route path="/apply-leave" element={<ApplyLeave />} />
+        <Route path="/approve-leave" element={<ApproveLeave />} />
+
+        {/* HR Administrative Onboarding */}
+        <Route path="/onboard-employee" element={<OnboardEmployee />} />
+
+        {/* Catch-all Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

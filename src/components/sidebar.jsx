@@ -11,7 +11,10 @@ const employeeLinks = [
 
 const hrLinks = [
   { to: "/approve-leave", icon: "bi-clipboard-check", label: "Approve Leave" },
+  { to: "/admin-attendance", icon: "bi-people", label: "Admin Attendance" },
   { to: "/onboard-employee", icon: "bi-person-plus", label: "Onboard Employee" },
+  { to: "/all-employees", icon: "bi-people-fill", label: "All Employees" },
+  { to: "/analytics", icon: "bi-bar-chart", label: "Analytics" },
 ];
 
 export default function Sidebar({ role, userName, onLogout }) {
@@ -28,7 +31,11 @@ export default function Sidebar({ role, userName, onLogout }) {
           <div className="df-logo-icon"><i className="bi bi-stack"></i></div>
           <div className="df-logo-text">Dayflow</div>
         </div>
-        <button className="df-toggle-btn" onClick={() => setCollapsed(!collapsed)}>
+        <button
+          className="df-toggle-btn"
+          onClick={() => setCollapsed(!collapsed)}
+          title="Toggle Navigation"
+        >
           <i className="bi bi-chevron-left"></i>
         </button>
       </div>
@@ -50,11 +57,15 @@ export default function Sidebar({ role, userName, onLogout }) {
 
         {role === "HR" && (
           <>
-            <div className="df-section-title">HR Tools</div>
+            <div className="df-section-title">HR Management</div>
             <div className={`df-nav-item ${hrExpanded ? "expanded" : ""} ${isHrActive ? "active" : ""}`}>
-              <button className="df-nav-link" onClick={() => setHrExpanded(!hrExpanded)}>
+              <button
+                type="button"
+                className="df-nav-link"
+                onClick={() => setHrExpanded(!hrExpanded)}
+              >
                 <span className="df-nav-icon"><i className="bi bi-briefcase"></i></span>
-                <span className="df-nav-text">Approvals</span>
+                <span className="df-nav-text">HR Tools</span>
                 <i className="bi bi-chevron-right df-chevron"></i>
               </button>
               <div className="df-subnav">
@@ -64,6 +75,7 @@ export default function Sidebar({ role, userName, onLogout }) {
                     to={link.to}
                     className={({ isActive }) => `df-subnav-link ${isActive ? "active" : ""}`}
                   >
+                    <i className={`bi ${link.icon} mr-2 text-xs opacity-70`}></i>
                     {link.label}
                   </NavLink>
                 ))}
