@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import SignIn from "./pages/Auth/SignIn";
@@ -32,3 +33,21 @@ export default function App() {
     </BrowserRouter>
   );
 }
+=======
+import React from 'react';
+import './App.css';
+import Profile from './pages/Profile/Profile';
+
+function App() {
+  return (
+    <div className="app-container">
+      <main className="main-content">
+        <Profile />
+      </main>
+    </div>
+  );
+}
+
+export default App;
+
+>>>>>>> ef3f85338034776d29fe94672e31f6db312d3fea
