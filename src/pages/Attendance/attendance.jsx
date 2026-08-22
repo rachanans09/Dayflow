@@ -1,163 +1,198 @@
-import React, { useState, useEffect } from 'react';
-import './Attendance.css';
-import { db, auth } from '../../firebase';
-import { collection, addDoc, query, where, getDocs, serverTimestamp } from 'firebase/firestore';
+import React, { useState, useEffect } from "react";
+import { db } from "../../firebase";
+import { collection, addDoc, query, onSnapshot, orderBy, serverTimestamp } from "firebase/firestore";
 
-const DUMMY_UID = "test-user-123";
-
-export default function Attendance() {
-  const [records, setRecords] = useState([]);
-  const [status, setStatus] = useState('Checked Out');
+export default function AttendanceDashboard() {
+  const [status, setStatus] = useState("Checked Out");
+  const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const fetchAttendance = async () => {
-    const user = auth.currentUser;
-    if (!user) return;
-
-    try {
-      const q = query(collection(db, "attendance"), where("uid", "==", user.uid));
-      const querySnapshot = await getDocs(q);
-      const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-      // Sort by Firestore timestamp seconds, fallback to document index order
-      data.sort((a, b) => {
-        const timeA = a.timestamp?.seconds || (a.timestamp?.toMillis ? a.timestamp.toMillis() / 1000 : 0);
-        const timeB = b.timestamp?.seconds || (b.timestamp?.toMillis ? b.timestamp.toMillis() / 1000 : 0);
-        return timeA - timeB;
-      });
-
-      setRecords(data);
-
-      if (data.length > 0) {
-        // Pick the last logged record in array
-        const latest = data[data.length - 1];
-        
-        // Check string without case sensitivity or hyphen mismatch
-        const isCheckIn = latest.type?.toLowerCase().includes('in');
-        setStatus(isCheckIn ? 'Checked In' : 'Checked Out');
-      }
-    } catch (err) {
-      console.error("Error fetching attendance:", err);
-    }
-  };
-
   useEffect(() => {
-    fetchAttendance();
+    try {
+      const q = query(collection(db, "attendance"), orderBy("timestamp", "desc"));
+      const unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+          const fetchedLogs = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setLogs(fetchedLogs);
+          if (fetchedLogs.length > 0) {
+            setStatus(fetchedLogs[0].type === "Check In" ? "Checked In" : "Checked Out");
+          }
+        },
+        (error) => console.error("Firestore Error:", error)
+      );
+      return () => unsubscribe();
+    } catch (err) {
+      console.error(err);
+    }
   }, []);
 
-  const handleAction = async (type) => {
-    const user = auth.currentUser;
-    if (!user) return;
-
+  const handleAttendance = async (actionType) => {
+    console.log("Action triggered:", actionType);
     setLoading(true);
     try {
-      const newStatus = type === 'Check-In' ? 'Checked In' : 'Checked Out';
-      
-      // Update UI state immediately for responsive feedback
-      setStatus(newStatus);
-
       await addDoc(collection(db, "attendance"), {
-        uid: user.uid,
-        type: type,
+        type: actionType,
         timestamp: serverTimestamp(),
-        date: new Date().toLocaleDateString('en-GB'),
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        timeString: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        dateString: new Date().toLocaleDateString(),
       });
-
-      await fetchAttendance();
+      setStatus(actionType === "Check In" ? "Checked In" : "Checked Out");
     } catch (err) {
-      console.error("Error logging attendance:", err);
+      console.error("Firebase write error:", err);
+      alert(`Firebase write failed: ${err.message}`);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="attendance-container">
-      {/* Header Banner */}
-      <header className="attendance-header">
+    <div style={cardContainerStyle}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
         <div>
-          <h1 style={{ color: "#0f172a" }}>Attendance Dashboard</h1>
-<p style={{ color: "#475569" }}>Track your daily hours and verify working logs</p>
-          <p>Track your daily hours and verify working logs</p>
+          <h1 style={{ margin: 0, fontSize: "28px", color: "#f8fafc" }}>Attendance Dashboard</h1>
+          <p style={{ color: "#94a3b8", margin: "4px 0 0 0", fontSize: "14px" }}>
+            Track your daily hours and verify working logs
+          </p>
         </div>
-        <div className={`status-badge ${status === 'Checked In' ? 'active' : 'inactive'}`}>
-          <span className="dot"></span>
-          {status}
-        </div>
-      </header>
+        <span style={badgeStyle(status)}>● {status}</span>
+      </div>
 
-      {/* Metrics Row */}
-      <div className="metrics-grid">
-        <div className="metric-card">
-          <span className="metric-title">Today's Status</span>
-          <span className="metric-value">{status}</span>
+      <div style={gridStyle}>
+        <div style={tileStyle}>
+          <span style={labelStyle}>TODAY'S STATUS</span>
+          <h3 style={valueStyle}>{status}</h3>
         </div>
-        <div className="metric-card">
-          <span className="metric-title">Total Logs</span>
-          <span className="metric-value">{records.length}</span>
+        <div style={tileStyle}>
+          <span style={labelStyle}>TOTAL LOGS</span>
+          <h3 style={valueStyle}>{logs.length}</h3>
         </div>
-        <div className="metric-card">
-          <span className="metric-title">Shift Type</span>
-          <span className="metric-value">Standard (9 AM - 5 PM)</span>
+        <div style={tileStyle}>
+          <span style={labelStyle}>SHIFT TYPE</span>
+          <h3 style={valueStyle}>Standard (9 AM – 5 PM)</h3>
         </div>
       </div>
 
-      {/* Action Controls */}
-      <div className="action-card">
-        <h3>Quick Actions</h3>
-        <div className="button-group">
-          <button 
-            onClick={() => handleAction('Check-In')} 
-            disabled={loading || status === 'Checked In'}
-            className="btn btn-primary"
+      <div style={{ ...tileStyle, marginBottom: "20px" }}>
+        <h3 style={{ margin: "0 0 16px 0", color: "#f8fafc", fontSize: "18px" }}>Quick Actions</h3>
+        <div style={{ display: "flex", gap: "12px" }}>
+          <button
+            onClick={() => handleAttendance("Check In")}
+            disabled={loading}
+            style={{
+              ...primaryBtn,
+              backgroundColor: "#2563eb",
+              opacity: loading ? 0.7 : 1,
+            }}
           >
-            Check In
+            {loading ? "Processing..." : "Check In"}
           </button>
-          <button 
-            onClick={() => handleAction('Check-Out')} 
-            disabled={loading || status === 'Checked Out'}
-            className="btn btn-secondary"
+          <button
+            onClick={() => handleAttendance("Check Out")}
+            disabled={loading}
+            style={{
+              ...primaryBtn,
+              backgroundColor: "#334155",
+              color: "#94a3b8",
+              opacity: loading ? 0.7 : 1,
+            }}
           >
             Check Out
           </button>
         </div>
       </div>
 
-      {/* Attendance History Table */}
-      <div className="history-card">
-        <h3>Recent Logs</h3>
-        {records.length === 0 ? (
-          <p className="empty-text">No attendance records found.</p>
+      <div style={tileStyle}>
+        <h3 style={{ margin: "0 0 16px 0", color: "#f8fafc", fontSize: "18px" }}>Recent Logs</h3>
+        {logs.length === 0 ? (
+          <p style={{ color: "#64748b", margin: 0, fontSize: "14px" }}>No attendance records found.</p>
         ) : (
-          <div className="table-wrapper">
-            <table className="attendance-table">
-              <thead>
-                <tr>
-                  <th>Event</th>
-                  <th>Date</th>
-                  <th>Time</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {records.slice().reverse().map((r) => (
-                  <tr key={r.id}>
-                    <td>
-                      <span className={`tag ${r.type?.toLowerCase().includes('in') ? 'tag-in' : 'tag-out'}`}>
-                        {r.type}
-                      </span>
-                    </td>
-                    <td>{r.date}</td>
-                    <td>{r.time || 'Recorded'}</td>
-                    <td><span className="status-success">Verified</span></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+            {logs.map((log) => (
+              <div key={log.id} style={logItemStyle}>
+                <span style={{ fontWeight: "600", color: log.type === "Check In" ? "#4ade80" : "#fca5a5" }}>
+                  {log.type}
+                </span>
+                <span style={{ color: "#94a3b8", fontSize: "13px" }}>
+                  {log.timeString || "Just now"} ({log.dateString || ""})
+                </span>
+              </div>
+            ))}
           </div>
         )}
       </div>
     </div>
   );
 }
+
+const cardContainerStyle = {
+  backgroundColor: "#0f172a",
+  padding: "32px",
+  borderRadius: "16px",
+  maxWidth: "700px",
+  margin: "0 auto",
+  boxShadow: "0 10px 25px -5px rgba(0,0,0,0.3)",
+};
+
+const gridStyle = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+  gap: "16px",
+  marginBottom: "20px",
+};
+
+const tileStyle = {
+  backgroundColor: "#1e293b",
+  padding: "20px",
+  borderRadius: "12px",
+  border: "1px solid #334155",
+};
+
+const labelStyle = {
+  color: "#94a3b8",
+  fontSize: "12px",
+  fontWeight: "700",
+  letterSpacing: "0.5px",
+};
+
+const valueStyle = {
+  margin: "8px 0 0 0",
+  color: "#f8fafc",
+  fontSize: "20px",
+  fontWeight: "600",
+};
+
+const primaryBtn = {
+  flex: 1,
+  padding: "14px",
+  borderRadius: "10px",
+  border: "none",
+  color: "#ffffff",
+  fontWeight: "600",
+  fontSize: "15px",
+  cursor: "pointer",
+  transition: "all 0.2s ease",
+};
+
+const badgeStyle = (status) => ({
+  padding: "6px 16px",
+  borderRadius: "20px",
+  fontWeight: "600",
+  fontSize: "13px",
+  backgroundColor: status === "Checked In" ? "rgba(74, 222, 128, 0.15)" : "rgba(248, 113, 113, 0.15)",
+  color: status === "Checked In" ? "#4ade80" : "#fca5a5",
+  border: `1px solid ${status === "Checked In" ? "rgba(74, 222, 128, 0.3)" : "rgba(248, 113, 113, 0.3)"}`,
+});
+
+const logItemStyle = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  padding: "12px 16px",
+  backgroundColor: "#0f172a",
+  borderRadius: "8px",
+  border: "1px solid #334155",
+};
