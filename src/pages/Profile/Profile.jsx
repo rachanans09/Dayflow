@@ -10,7 +10,10 @@ export default function Profile() {
   useEffect(() => {
     const load = async () => {
       const user = auth.currentUser;
-      if (!user) return;
+      if (!user) {
+        setLoading(false);
+        return;
+      }
       try {
         const snap = await getDoc(doc(db, "profiles", user.uid));
         if (snap.exists()) {
@@ -27,12 +30,14 @@ export default function Profile() {
 
   const save = async () => {
     const user = auth.currentUser;
-    if (!user) return;
+    if (!user) return alert("You must be logged in to save.");
     try {
       await setDoc(doc(db, "profiles", user.uid), data, { merge: true });
       setEditing(false);
+      alert("Profile updated successfully!");
     } catch (err) {
       console.error(err);
+      alert("Error saving profile.");
     }
   };
 
@@ -44,7 +49,7 @@ export default function Profile() {
     <div style={{ padding: "20px" }}>
       <h2>My Profile</h2>
       <p>
-        <strong>Email:</strong> {auth.currentUser?.email}
+        <strong>Email:</strong> {auth.currentUser?.email || "Not logged in"}
       </p>
       <p>
         <strong>Name:</strong>{" "}
