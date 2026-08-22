@@ -4,7 +4,7 @@
 import AttendanceDashboard from "./pages/Attendance/attendance";
 =======
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react_router_dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import SignIn from "./pages/Auth/SignIn";
 import SignUp from "./pages/Auth/SignUp";
 import Dashboard from "./pages/Dashboard";
