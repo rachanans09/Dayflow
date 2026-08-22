@@ -73,7 +73,8 @@ export default function Attendance() {
       {/* Header Banner */}
       <header className="attendance-header">
         <div>
-          <h1>Attendance Dashboard</h1>
+          <h1 style={{ color: "#0f172a" }}>Attendance Dashboard</h1>
+<p style={{ color: "#475569" }}>Track your daily hours and verify working logs</p>
           <p>Track your daily hours and verify working logs</p>
         </div>
         <div className={`status-badge ${status === 'Checked In' ? 'active' : 'inactive'}`}>
