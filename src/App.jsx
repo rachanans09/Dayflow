@@ -1,27 +1,42 @@
-import AttendanceDashboard from "./pages/Attendance/attendance";
+import { useState } from "react";
 import ApplyLeave from "./pages/Leave/ApplyLeave";
 import ApproveLeave from "./pages/Leave/ApproveLeave";
+import Attendance from "./pages/Attendance/Attendance";
 
-function App() {
+export default function App() {
+  const [activeTab, setActiveTab] = useState("attendance");
+
   return (
-    <div style={{ padding: "20px" }}>
-      {/* Attendance Module */}
-      <section style={{ marginBottom: "40px" }}>
-        <AttendanceDashboard />
-      </section>
+    <div className="dashboard-container">
+      <header className="header" style={{ textAlign: "center", marginBottom: "24px" }}>
+        <h1>Dayflow HRMS</h1>
+        <p>Employee Portal & Work Management</p>
 
-      <hr style={{ border: "1px solid #334155", margin: "40px 0" }} />
+        <div style={{ display: "flex", justifyContent: "center", gap: "12px", marginTop: "20px" }}>
+          <button 
+            className="btn-primary" 
+            style={{ opacity: activeTab === "attendance" ? 1 : 0.5, cursor: "pointer" }}
+            onClick={() => setActiveTab("attendance")}
+          >
+            🕒 Attendance
+          </button>
+          <button 
+            className="btn-primary" 
+            style={{ opacity: activeTab === "leave" ? 1 : 0.5, cursor: "pointer" }}
+            onClick={() => setActiveTab("leave")}
+          >
+            📝 Leave Management
+          </button>
+        </div>
+      </header>
 
-      {/* Leave Management Modules */}
-      <section style={{ marginBottom: "40px" }}>
-        <ApplyLeave />
-      </section>
-
-      <section>
-        <ApproveLeave />
-      </section>
+      {activeTab === "attendance" && <Attendance />}
+      {activeTab === "leave" && (
+        <>
+          <ApplyLeave />
+          <ApproveLeave />
+        </>
+      )}
     </div>
   );
 }
-
-export default App;
