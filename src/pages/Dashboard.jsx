@@ -6,87 +6,67 @@ import { signOut } from "firebase/auth";
 
 export default function Dashboard() {
   const [role, setRole] = useState("");
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     const load = async () => {
-      if (!auth.currentUser) {
-        navigate("/");
-        return;
-      }
-      try {
-        const snap = await getDoc(doc(db, "users", auth.currentUser.uid));
-        if (snap.exists()) {
-          setRole(snap.data().role);
-        }
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
+      if (!auth.currentUser) return;
+      const snap = await getDoc(doc(db, "users", auth.currentUser.uid));
+      if (snap.exists()) setRole(snap.data().role);
     };
     load();
-  }, [navigate]);
+  }, []);
 
   const logout = async () => {
     await signOut(auth);
     navigate("/");
   };
 
-  if (loading) {
-    return <p style={{ color: "#64748b" }}>Loading dashboard...</p>;
-  }
-
   return (
-    <div className="dashboard-container">
-      <div className="dashboard-nav">
-        <div>
-          <h2 style={{ fontSize: "1.5rem", fontWeight: 700 }}>Employee Portal</h2>
-          <p style={{ color: "#64748b", fontSize: "0.9rem" }}>
-            Signed in as: <strong>{auth.currentUser?.email}</strong>{" "}
-            <span className="badge">{role || "Employee"}</span>
-          </p>
-        </div>
-        <button
-          onClick={logout}
-          style={{
-            background: "#fee2e2",
-            color: "#dc2626",
-            border: "none",
-            padding: "0.5rem 1rem",
-            borderRadius: "8px",
-            fontWeight: 600,
-            cursor: "pointer",
-          }}
-        >
-          Sign Out
-        </button>
-      </div>
-
-      <div className="grid-cards">
-        <Link to="/profile" className="action-card">
-          <h3>👤 My Profile</h3>
-          <p>View and update personal info, contact, and job records.</p>
-        </Link>
-
-        <Link to="/attendance" className="action-card">
-          <h3>⏱️ Attendance</h3>
-          <p>Punch check-in/check-out and view your daily logs.</p>
-        </Link>
-
-        <Link to="/apply-leave" className="action-card">
-          <h3>📅 Apply Leave</h3>
-          <p>Submit time-off requests for paid or sick leaves.</p>
-        </Link>
-
-        {role === "HR" && (
-          <Link to="/approve-leave" className="action-card" style={{ borderColor: "#818cf8" }}>
-            <h3>📋 Approve Leaves</h3>
-            <p>Review and approve pending team leave submissions.</p>
-          </Link>
-        )}
-      </div>
+    <div style={{ padding: "20px" }}>
+      <h2>Dashboard ({role || "Employee"})</h2>
+      <nav style={{ marginBottom: "20px" }}>
+        <Link to="/profile">Profile</Link> |{" "}
+        <Link to="/attendance">Attendance</Link> |{" "}
+        <Link to="/apply-leave">Apply Leave</Link>
+        {role === "HR" && <> | <Link to="/approve-leave">Approve Leave</Link></>}
+      </nav>
+      <button onClick={logout}>Logout</button>
     </div>
   );
 }
+```
+
+---
+
+### Step 2: Confirm `src/App.jsx` has the Profile Route
+Double-check that your `src/App.jsx` includes the route for your profile page so the app knows where to go when you click it:
+
+```jsx
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import SignIn from "./pages/Auth/SignIn";
+import SignUp from "./pages/Auth/SignUp";
+import Dashboard from "./pages/Dashboard";
+import Profile from "./pages/Profile/Profile";
+import Attendance from "./pages/Attendance/Attendance";
+import ApplyLeave from "./pages/Leave/ApplyLeave";
+import ApproveLeave from "./pages/Leave/ApproveLeave";
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/attendance" element={<Attendance />} />
+        <Route path="/apply-leave" element={<ApplyLeave />} />
+        <Route path="/approve-leave" element={<ApproveLeave />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;
