@@ -1,7 +1,5 @@
-<<<<<<< HEAD
-import AttendanceDashboard from "./pages/Attendance/attendance";
-=======
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react_router_dom";
 import SignIn from "./pages/Auth/SignIn";
 import SignUp from "./pages/Auth/SignUp";
 import Dashboard from "./pages/Dashboard";
@@ -9,15 +7,9 @@ import Profile from "./pages/Profile/Profile";
 import Attendance from "./pages/Attendance/Attendance";
 import ApplyLeave from "./pages/Leave/ApplyLeave";
 import ApproveLeave from "./pages/Leave/ApproveLeave";
->>>>>>> 8c0564ae7376a1d05f10fded091d7458877662dc
 
 function App() {
   return (
-<<<<<<< HEAD
-    <div>
-      <AttendanceDashboard />
-    </div>
-=======
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<SignIn />} />
@@ -29,7 +21,6 @@ function App() {
         <Route path="/approve-leave" element={<ApproveLeave />} />
       </Routes>
     </BrowserRouter>
->>>>>>> 8c0564ae7376a1d05f10fded091d7458877662dc
   );
 }
 
