@@ -1,3 +1,5 @@
+
+
 import AttendanceDashboard from "./pages/Attendance/attendance";
 import ApplyLeave from "./pages/Leave/ApplyLeave";
 import ApproveLeave from "./pages/Leave/ApproveLeave";
@@ -12,7 +14,7 @@ function App() {
 
       <hr style={{ border: "1px solid #334155", margin: "40px 0" }} />
 
-      {/* Member 4: Leave Management Modules */}
+      {/* Leave Management Modules */}
       <section style={{ marginBottom: "40px" }}>
         <ApplyLeave />
       </section>
