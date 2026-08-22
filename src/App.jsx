@@ -1,12 +1,16 @@
-import React from 'react';
-import Attendance from './pages/Attendance/Attendance';
+import ApplyLeave from "./pages/Leave/ApplyLeave";
+import ApproveLeave from "./pages/Leave/ApproveLeave";
 
-function App() {
+export default function App() {
   return (
-    <div>
-      <Attendance />
+    <div className="dashboard-container">
+      <header className="header">
+        <h1>Dayflow HRMS</h1>
+        <p>Manage employee leaves and request approvals seamlessly.</p>
+      </header>
+
+      <ApplyLeave />
+      <ApproveLeave />
     </div>
   );
 }
-
-export default App;
