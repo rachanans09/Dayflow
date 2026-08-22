@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { auth, db } from "../../firebase";
+import React, { useState } from "react";
+import { db } from "../../firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 export default function ApplyLeave() {
-  const [leaveType, setLeaveType] = useState("Paid");
+  const [leaveType, setLeaveType] = useState("Paid Leave");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [reason, setReason] = useState("");
@@ -11,113 +11,109 @@ export default function ApplyLeave() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!startDate || !endDate) return alert("Please select dates.");
-
-    const user = auth.currentUser;
-    if (!user) {
-      alert("You must be logged in to apply for leave.");
-      return;
-    }
-
+    if (!startDate || !endDate) return alert("Please select start and end dates.");
     setLoading(true);
     try {
       await addDoc(collection(db, "leaves"), {
-        uid: user.uid,
-        userEmail: user.email,
         leaveType,
         startDate,
         endDate,
-        reason,
+        reason: reason || "No remarks provided",
         status: "Pending",
         createdAt: serverTimestamp(),
       });
-      alert("Leave request submitted successfully!");
       setReason("");
       setStartDate("");
       setEndDate("");
+      alert("Leave application submitted successfully!");
     } catch (err) {
-      console.error("Error submitting leave request:", err);
-      alert("Failed to submit leave request.");
+      console.error(err);
+      alert("Error submitting leave request.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="card" style={{ maxWidth: "500px", margin: "2rem auto", padding: "1.5rem" }}>
-      <div className="card-title" style={{ fontSize: "1.25rem", fontWeight: "bold", marginBottom: "1rem" }}>
+    <div style={cardStyle}>
+      <h2 style={{ margin: "0 0 20px 0", fontSize: "20px", color: "#f8fafc" }}>
         📝 Apply for Leave
-      </div>
-      <form onSubmit={handleSubmit}>
-        <div className="form-grid" style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-          <div className="input-group">
-            <label style={{ display: "block", marginBottom: "0.25rem" }}>Leave Type</label>
-            <select
-              className="input-field"
-              style={{ width: "100%", padding: "0.5rem" }}
-              value={leaveType}
-              onChange={(e) => setLeaveType(e.target.value)}
-            >
-              <option value="Paid">Paid Leave</option>
-              <option value="Sick">Sick Leave</option>
-              <option value="Casual">Casual Leave</option>
-            </select>
-          </div>
-
-          <div className="input-group">
-            <label style={{ display: "block", marginBottom: "0.25rem" }}>Start Date</label>
-            <input
-              className="input-field"
-              style={{ width: "100%", padding: "0.5rem" }}
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="input-group">
-            <label style={{ display: "block", marginBottom: "0.25rem" }}>End Date</label>
-            <input
-              className="input-field"
-              style={{ width: "100%", padding: "0.5rem" }}
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="input-group">
-            <label style={{ display: "block", marginBottom: "0.25rem" }}>Reason / Remarks</label>
-            <input
-              className="input-field"
-              style={{ width: "100%", padding: "0.5rem" }}
-              placeholder="Brief explanation..."
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              required
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="btn-primary"
-            disabled={loading}
-            style={{
-              padding: "0.75rem",
-              background: "#4f46e5",
-              color: "white",
-              border: "none",
-              borderRadius: "6px",
-              cursor: "pointer",
-              fontWeight: 600,
-            }}
-          >
-            {loading ? "Submitting..." : "Submit Application"}
-          </button>
+      </h2>
+      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+        <div>
+          <label style={labelStyle}>Leave Type</label>
+          <select value={leaveType} onChange={(e) => setLeaveType(e.target.value)} style={inputStyle}>
+            <option value="Paid Leave">Paid Leave</option>
+            <option value="Sick Leave">Sick Leave</option>
+            <option value="Casual Leave">Casual Leave</option>
+          </select>
         </div>
+        <div style={{ display: "flex", gap: "16px" }}>
+          <div style={{ flex: 1 }}>
+            <label style={labelStyle}>Start Date</label>
+            <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} style={inputStyle} required />
+          </div>
+          <div style={{ flex: 1 }}>
+            <label style={labelStyle}>End Date</label>
+            <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} style={inputStyle} required />
+          </div>
+        </div>
+        <div>
+          <label style={labelStyle}>Reason / Remarks</label>
+          <textarea
+            rows="3"
+            placeholder="Brief explanation..."
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            style={{ ...inputStyle, resize: "vertical" }}
+          />
+        </div>
+        <button type="submit" disabled={loading} style={buttonStyle}>
+          {loading ? "Submitting..." : "Submit Application"}
+        </button>
       </form>
     </div>
   );
 }
+
+const cardStyle = {
+  backgroundColor: "#1e293b",
+  padding: "24px",
+  borderRadius: "12px",
+  color: "#f8fafc",
+  maxWidth: "600px",
+  margin: "0 auto",
+  boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+};
+
+const labelStyle = {
+  display: "block",
+  marginBottom: "6px",
+  fontSize: "14px",
+  color: "#94a3b8",
+  fontWeight: "500",
+};
+
+const inputStyle = {
+  width: "100%",
+  padding: "10px 14px",
+  borderRadius: "8px",
+  border: "1px solid #334155",
+  backgroundColor: "#0f172a",
+  color: "#f8fafc",
+  fontSize: "14px",
+  outline: "none",
+  boxSizing: "border-box",
+};
+
+const buttonStyle = {
+  backgroundColor: "#2563eb",
+  color: "#ffffff",
+  padding: "12px",
+  borderRadius: "8px",
+  border: "none",
+  fontWeight: "600",
+  fontSize: "14px",
+  cursor: "pointer",
+  marginTop: "8px",
+};
