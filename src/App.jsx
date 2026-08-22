@@ -1,28 +1,17 @@
-<<<<<<< HEAD
 import React, { useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import SignIn from "./pages/Auth/SignIn";
+import SignUp from "./pages/Auth/SignUp";
+import Profile from "./pages/Profile/Profile";
+import OnboardEmployee from "./pages/Profile/OnboardEmployee";
 import AttendanceDashboard from "./pages/Attendance/attendance";
 import ApplyLeave from "./pages/Leave/ApplyLeave";
 import ApproveLeave from "./pages/Leave/ApproveLeave";
 
 function Dashboard() {
   const [activeTab, setActiveTab] = useState("attendance");
-=======
-import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import SignIn from "./pages/Auth/SignIn";
-import SignUp from "./pages/Auth/SignUp";
-import Dashboard from "./pages/Dashboard";
-import Profile from "./pages/Profile/Profile";
-import Attendance from "./pages/Attendance/Attendance";
-import ApplyLeave from "./pages/Leave/ApplyLeave";
-import ApproveLeave from "./pages/Leave/ApproveLeave";
-import OnboardEmployee from "./pages/Profile/OnboardEmployee";
->>>>>>> ab11ff9fba6200320fd808d61bbeb443705b332c
 
-function App() {
   return (
-<<<<<<< HEAD
     <div style={layoutStyle}>
       <div style={headerStyle}>
         <h1 style={{ margin: 0, fontSize: "32px", fontWeight: "700" }}>Dayflow HRMS</h1>
@@ -64,6 +53,10 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Dashboard />} />
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/onboard" element={<OnboardEmployee />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
@@ -95,21 +88,3 @@ const tabButtonStyle = (isActive) => ({
   color: isActive ? "#ffffff" : "#94a3b8",
   transition: "all 0.2s ease",
 });
-=======
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<SignIn />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/attendance" element={<Attendance />} />
-        <Route path="/apply-leave" element={<ApplyLeave />} />
-        <Route path="/approve-leave" element={<ApproveLeave />} />
-        <Route path="/onboard-employee" element={<OnboardEmployee />} />
-      </Routes>
-    </BrowserRouter>
-  );
-}
-
-export default App;
->>>>>>> ab11ff9fba6200320fd808d61bbeb443705b332c
