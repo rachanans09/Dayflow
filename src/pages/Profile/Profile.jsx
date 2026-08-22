@@ -1,24 +1,21 @@
 import { useState, useEffect } from "react";
 import { auth, db } from "../../firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
+import { Card, PageContainer, Button, Input, Spinner } from "../../components/ui";
+import toast from "react-hot-toast";
 
 export default function Profile() {
-  const [data, setData] = useState({ name: "", phone: "", address: "", jobTitle: "" });
+  const [data, setData] = useState({ name: "", phone: "", address: "", jobTitle: "", department: "" });
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const load = async () => {
       const user = auth.currentUser;
-      if (!user) {
-        setLoading(false);
-        return;
-      }
+      if (!user) return;
       try {
         const snap = await getDoc(doc(db, "profiles", user.uid));
-        if (snap.exists()) {
-          setData(snap.data());
-        }
+        if (snap.exists()) setData(snap.data());
       } catch (err) {
         console.error(err);
       } finally {
@@ -30,68 +27,71 @@ export default function Profile() {
 
   const save = async () => {
     const user = auth.currentUser;
-    if (!user) return alert("You must be logged in to save.");
+    if (!user) return;
     try {
       await setDoc(doc(db, "profiles", user.uid), data, { merge: true });
       setEditing(false);
-      alert("Profile updated successfully!");
+      toast.success("Profile updated successfully!");
     } catch (err) {
-      console.error(err);
-      alert("Error saving profile.");
+      toast.error("Failed to save profile.");
     }
   };
 
-  if (loading) {
-    return <p style={{ padding: "20px" }}>Loading profile...</p>;
-  }
+  if (loading) return <PageContainer><Spinner /></PageContainer>;
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>My Profile</h2>
-      <p>
-        <strong>Email:</strong> {auth.currentUser?.email || "Not logged in"}
-      </p>
-      <p>
-        <strong>Name:</strong>{" "}
-        {editing ? (
-          <input
-            value={data.name}
-            onChange={(e) => setData({ ...data, name: e.target.value })}
-          />
-        ) : (
-          data.name || "Not set"
-        )}
-      </p>
-      <p>
-        <strong>Phone:</strong>{" "}
-        {editing ? (
-          <input
-            value={data.phone}
-            onChange={(e) => setData({ ...data, phone: e.target.value })}
-          />
-        ) : (
-          data.phone || "Not set"
-        )}
-      </p>
-      <p>
-        <strong>Address:</strong>{" "}
-        {editing ? (
-          <input
-            value={data.address}
-            onChange={(e) => setData({ ...data, address: e.target.value })}
-          />
-        ) : (
-          data.address || "Not set"
-        )}
-      </p>
-      <p>
-        <strong>Job Title:</strong> {data.jobTitle || "Not assigned"} (Admin-only field)
-      </p>
-      {editing ? (
-        <button onClick={save}>Save</button>
-      ) : (
-        <button onClick={() => setEditing(true)}>Edit</button>
-      )}
-    </div>
+    <PageContainer>
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-2xl font-bold">My Profile</h1>
+          <p className="text-sm text-slate-500">Manage your contact information and view job assignments</p>
+        </div>
+        <Button variant={editing ? "secondary" : "primary"} onClick={() => (editing ? save() : setEditing(true))}>
+          {editing ? "Save Changes" : "Edit Profile"}
+        </Button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card className="md:col-span-1 text-center">
+          <div className="w-20 h-20 bg-indigo-100 text-indigo-600 text-2xl font-bold rounded-full flex items-center justify-center mx-auto mb-4">
+            {(data.name || auth.currentUser?.email || "U")[0].toUpperCase()}
+          </div>
+          <h3 className="font-bold text-lg">{data.name || "Employee Name"}</h3>
+          <p className="text-xs text-slate-500">{data.jobTitle || "Job Title"}</p>
+          <span className="inline-block mt-3 px-3 py-1 bg-indigo-50 text-indigo-600 text-xs font-semibold rounded-full">
+            {data.department || "General"}
+          </span>
+        </Card>
+
+        <Card className="md:col-span-2">
+          <h3 className="text-base font-semibold mb-4 border-b pb-2 dark:border-slate-700">Account & Job Details</h3>
+          <div className="space-y-3">
+            <Input label="Email" value={auth.currentUser?.email || ""} disabled />
+            <Input
+              label="Full Name"
+              value={data.name || ""}
+              disabled={!editing}
+              onChange={(e) => setData({ ...data, name: e.target.value })}
+            />
+            <Input
+              label="Phone"
+              value={data.phone || ""}
+              disabled={!editing}
+              onChange={(e) => setData({ ...data, phone: e.target.value })}
+            />
+            <Input
+              label="Address"
+              value={data.address || ""}
+              disabled={!editing}
+              onChange={(e) => setData({ ...data, address: e.target.value })}
+            />
+            <div className="grid grid-cols-2 gap-3">
+              <Input label="Job Title (HR Managed)" value={data.jobTitle || "Not Assigned"} disabled />
+              <Input label="Department (HR Managed)" value={data.department || "Not Assigned"} disabled />
+            </div>
+          </div>
+        </Card>
+      </div>
+    </PageContainer>
   );
 }

@@ -1,9 +1,11 @@
-import React, { useState } from "react";
-import { db } from "../../firebase";
+import { useState } from "react";
+import { auth, db } from "../../firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { Card, PageContainer, Button, Input, Select } from "../../components/ui";
+import toast from "react-hot-toast";
 
 export default function ApplyLeave() {
-  const [leaveType, setLeaveType] = useState("Paid Leave");
+  const [leaveType, setLeaveType] = useState("Paid");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [reason, setReason] = useState("");
@@ -11,109 +13,79 @@ export default function ApplyLeave() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!startDate || !endDate) return alert("Please select start and end dates.");
+    if (!startDate || !endDate) return toast.error("Please pick start and end dates.");
+
+    const user = auth.currentUser;
+    if (!user) return toast.error("Session expired. Please log in.");
+
     setLoading(true);
     try {
       await addDoc(collection(db, "leaves"), {
+        uid: user.uid,
+        userEmail: user.email,
         leaveType,
         startDate,
         endDate,
-        reason: reason || "No remarks provided",
+        reason,
         status: "Pending",
         createdAt: serverTimestamp(),
       });
+      toast.success("Leave application submitted!");
       setReason("");
       setStartDate("");
       setEndDate("");
-      alert("Leave application submitted successfully!");
     } catch (err) {
-      console.error(err);
-      alert("Error submitting leave request.");
+      toast.error("Failed to submit request.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={cardStyle}>
-      <h2 style={{ margin: "0 0 20px 0", fontSize: "20px", color: "#f8fafc" }}>
-        📝 Apply for Leave
-      </h2>
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-        <div>
-          <label style={labelStyle}>Leave Type</label>
-          <select value={leaveType} onChange={(e) => setLeaveType(e.target.value)} style={inputStyle}>
-            <option value="Paid Leave">Paid Leave</option>
-            <option value="Sick Leave">Sick Leave</option>
-            <option value="Casual Leave">Casual Leave</option>
-          </select>
-        </div>
-        <div style={{ display: "flex", gap: "16px" }}>
-          <div style={{ flex: 1 }}>
-            <label style={labelStyle}>Start Date</label>
-            <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} style={inputStyle} required />
+    <PageContainer>
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold">Apply for Leave</h1>
+        <p className="text-sm text-slate-500">Submit time-off requests for HR approval</p>
+      </div>
+
+      <Card className="max-w-xl">
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <Select label="Leave Category" value={leaveType} onChange={(e) => setLeaveType(e.target.value)}>
+            <option value="Paid">Paid Leave</option>
+            <option value="Sick">Sick Leave</option>
+            <option value="Casual">Casual Leave</option>
+          </Select>
+
+          <div className="grid grid-cols-2 gap-3">
+            <Input
+              label="Start Date"
+              type="date"
+              value={startDate}
+              required
+              onChange={(e) => setStartDate(e.target.value)}
+            />
+            <Input
+              label="End Date"
+              type="date"
+              value={endDate}
+              required
+              onChange={(e) => setEndDate(e.target.value)}
+            />
           </div>
-          <div style={{ flex: 1 }}>
-            <label style={labelStyle}>End Date</label>
-            <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} style={inputStyle} required />
-          </div>
-        </div>
-        <div>
-          <label style={labelStyle}>Reason / Remarks</label>
-          <textarea
-            rows="3"
-            placeholder="Brief explanation..."
+
+          <Input
+            label="Reason / Remarks"
+            placeholder="e.g. Attending family function"
             value={reason}
+            required
             onChange={(e) => setReason(e.target.value)}
-            style={{ ...inputStyle, resize: "vertical" }}
           />
-        </div>
-        <button type="submit" disabled={loading} style={buttonStyle}>
-          {loading ? "Submitting..." : "Submit Application"}
-        </button>
-      </form>
-    </div>
+
+          <Button type="submit" className="w-full mt-2" disabled={loading}>
+            {loading ? "Submitting..." : "Submit Leave Application"}
+          </Button>
+        </form>
+      </Card>
+    </PageContainer>
   );
 }
-
-const cardStyle = {
-  backgroundColor: "#1e293b",
-  padding: "24px",
-  borderRadius: "12px",
-  color: "#f8fafc",
-  maxWidth: "600px",
-  margin: "0 auto",
-  boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-};
-
-const labelStyle = {
-  display: "block",
-  marginBottom: "6px",
-  fontSize: "14px",
-  color: "#94a3b8",
-  fontWeight: "500",
-};
-
-const inputStyle = {
-  width: "100%",
-  padding: "10px 14px",
-  borderRadius: "8px",
-  border: "1px solid #334155",
-  backgroundColor: "#0f172a",
-  color: "#f8fafc",
-  fontSize: "14px",
-  outline: "none",
-  boxSizing: "border-box",
-};
-
-const buttonStyle = {
-  backgroundColor: "#2563eb",
-  color: "#ffffff",
-  padding: "12px",
-  borderRadius: "8px",
-  border: "none",
-  fontWeight: "600",
-  fontSize: "14px",
-  cursor: "pointer",
-  marginTop: "8px",
-};
