@@ -44,7 +44,7 @@ export default function Profile() {
   if (loading) {
     return (
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh", backgroundColor: "#f0f2f5", fontFamily: "sans-serif" }}>
-        <p style={{ color: "#6b7280" }}>Loading profile...</p>
+        <p style={{ color: "#94a3b8" }}>Loading profile...</p>
       </div>
     );
   }
@@ -59,129 +59,191 @@ export default function Profile() {
       fontFamily: "sans-serif",
       padding: "20px"
     }}>
+      {/* Main Container mirroring the Dashboard screenshot */}
       <div style={{ 
-        backgroundColor: "#0d1b2a", 
+        backgroundColor: "#080e1a", 
         color: "#ffffff",
-        padding: "40px 30px", 
-        borderRadius: "16px", 
-        boxShadow: "0 10px 25px rgba(0, 0, 0, 0.2)", 
+        padding: "40px 32px", 
+        borderRadius: "20px", 
+        boxShadow: "0 20px 40px rgba(0, 0, 0, 0.3)", 
         width: "100%", 
-        maxWidth: "480px",
+        maxWidth: "520px",
         boxSizing: "border-box"
       }}>
-        {/* Header matching Dayflow HRMS theme */}
-        <div style={{ textAlign: "center", marginBottom: "30px" }}>
-          <h1 style={{ margin: "0 0 8px 0", fontSize: "28px", fontWeight: "bold", letterSpacing: "0.5px" }}>Dayflow HRMS</h1>
-          <p style={{ margin: "0", color: "#94a3b8", fontSize: "14px" }}>Employee Portal & Work Management</p>
+        {/* Exact Header Style */}
+        <div style={{ textAlign: "center", marginBottom: "28px" }}>
+          <h1 style={{ margin: "0 0 6px 0", fontSize: "26px", fontWeight: "700", letterSpacing: "0.3px", color: "#ffffff" }}>Dayflow HRMS</h1>
+          <p style={{ margin: "0", color: "#8a99ad", fontSize: "13px" }}>Employee Portal & Work Management</p>
         </div>
 
-        {/* Profile Card Header */}
-        <div style={{ 
-          backgroundColor: "#1b263b", 
-          padding: "20px", 
-          borderRadius: "12px", 
-          marginBottom: "20px",
-          display: "flex",
-          alignItems: "center",
-          gap: "16px",
-          border: "1px solid #334155"
-        }}>
+        {/* Top Badges / Navigation Tabs Style from Screenshot */}
+        <div style={{ display: "flex", gap: "10px", marginBottom: "32px", justifyContent: "center" }}>
           <div style={{ 
-            width: "55px", 
-            height: "55px", 
-            borderRadius: "50%", 
             backgroundColor: "#2563eb", 
             color: "#ffffff", 
-            display: "flex", 
-            alignItems: "center", 
-            justifyContent: "center", 
-            fontSize: "22px", 
-            fontWeight: "bold",
-            flexShrink: 0
+            padding: "10px 18px", 
+            borderRadius: "10px", 
+            fontSize: "13px", 
+            fontWeight: "600",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+            boxShadow: "0 4px 12px rgba(37, 99, 235, 0.3)"
           }}>
-            {data.name ? data.name.charAt(0).toUpperCase() : "U"}
+            <span style={{ width: "7px", height: "7px", backgroundColor: "#ffffff", borderRadius: "50%" }}></span>
+            Profile Information
           </div>
-          <div style={{ overflow: "hidden" }}>
-            <h3 style={{ margin: "0 0 4px 0", fontSize: "18px", color: "#ffffff", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-              {data.name || "My Profile"}
-            </h3>
-            <p style={{ margin: "0", color: "#94a3b8", fontSize: "13px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-              {auth.currentUser?.email || "Not logged in"}
-            </p>
+          <div style={{ 
+            backgroundColor: "#111c2e", 
+            color: "#8a99ad", 
+            padding: "10px 18px", 
+            borderRadius: "10px", 
+            fontSize: "13px", 
+            fontWeight: "500",
+            border: "1px solid #1e293b"
+          }}>
+            📄 Account Settings
           </div>
         </div>
 
-        {/* Form Fields */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-          <div>
-            <label style={{ display: "block", fontSize: "12px", fontWeight: "600", color: "#94a3b8", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Full Name</label>
-            {editing ? (
-              <input
-                style={{ width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid #475569", backgroundColor: "#1b263b", color: "#ffffff", fontSize: "14px", boxSizing: "border-box", outline: "none" }}
-                value={data.name}
-                onChange={(e) => setData({ ...data, name: e.target.value })}
-                placeholder="Enter your name"
-              />
-            ) : (
-              <div style={{ padding: "12px", backgroundColor: "#1b263b", borderRadius: "8px", color: "#ffffff", fontSize: "14px", border: "1px solid #334155" }}>
-                {data.name || "Not set"}
-              </div>
-            )}
+        {/* Profile Card Box matching your aesthetic */}
+        <div style={{ 
+          backgroundColor: "#111c2e", 
+          padding: "24px", 
+          borderRadius: "16px", 
+          marginBottom: "20px",
+          border: "1px solid #1e293b"
+        }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+            <div>
+              <h3 style={{ margin: "0 0 4px 0", fontSize: "18px", fontWeight: "600", color: "#ffffff" }}>Employee Profile</h3>
+              <p style={{ margin: "0", color: "#8a99ad", fontSize: "12px" }}>Manage your personal credentials and info</p>
+            </div>
+            <span style={{ 
+              backgroundColor: "rgba(16, 185, 129, 0.12)", 
+              color: "#34d399", 
+              border: "1px solid rgba(16, 185, 129, 0.3)", 
+              padding: "5px 12px", 
+              borderRadius: "20px", 
+              fontSize: "12px", 
+              fontWeight: "600",
+              display: "flex",
+              alignItems: "center",
+              gap: "6px"
+            }}>
+              <span style={{ width: "6px", height: "6px", backgroundColor: "#34d399", borderRadius: "50%" }}></span>
+              Active Profile
+            </span>
           </div>
 
-          <div>
-            <label style={{ display: "block", fontSize: "12px", fontWeight: "600", color: "#94a3b8", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Phone Number</label>
-            {editing ? (
-              <input
-                style={{ width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid #475569", backgroundColor: "#1b263b", color: "#ffffff", fontSize: "14px", boxSizing: "border-box", outline: "none" }}
-                value={data.phone}
-                onChange={(e) => setData({ ...data, phone: e.target.value })}
-                placeholder="Enter your phone number"
-              />
-            ) : (
-              <div style={{ padding: "12px", backgroundColor: "#1b263b", borderRadius: "8px", color: "#ffffff", fontSize: "14px", border: "1px solid #334155" }}>
-                {data.phone || "Not set"}
+          {/* User Identity Preview Banner */}
+          <div style={{ 
+            display: "flex", 
+            alignItems: "center", 
+            gap: "14px", 
+            padding: "14px", 
+            backgroundColor: "#0d1624", 
+            borderRadius: "12px",
+            marginBottom: "20px",
+            border: "1px solid #1a273b"
+          }}>
+            <div style={{ 
+              width: "48px", 
+              height: "48px", 
+              borderRadius: "50%", 
+              backgroundColor: "#2563eb", 
+              color: "#ffffff", 
+              display: "flex", 
+              alignItems: "center", 
+              justifyContent: "center", 
+              fontSize: "20px", 
+              fontWeight: "bold",
+              flexShrink: 0 
+            }}>
+              {data.name ? data.name.charAt(0).toUpperCase() : "U"}
+            </div>
+            <div style={{ overflow: "hidden" }}>
+              <div style={{ fontSize: "15px", fontWeight: "600", color: "#ffffff", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                {data.name || "Unnamed Employee"}
               </div>
-            )}
+              <div style={{ fontSize: "12px", color: "#8a99ad", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                {auth.currentUser?.email || "No email connected"}
+              </div>
+            </div>
           </div>
 
-          <div>
-            <label style={{ display: "block", fontSize: "12px", fontWeight: "600", color: "#94a3b8", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Address</label>
-            {editing ? (
-              <input
-                style={{ width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid #475569", backgroundColor: "#1b263b", color: "#ffffff", fontSize: "14px", boxSizing: "border-box", outline: "none" }}
-                value={data.address}
-                onChange={(e) => setData({ ...data, address: e.target.value })}
-                placeholder="Enter your address"
-              />
-            ) : (
-              <div style={{ padding: "12px", backgroundColor: "#1b263b", borderRadius: "8px", color: "#ffffff", fontSize: "14px", border: "1px solid #334155" }}>
-                {data.address || "Not set"}
-              </div>
-            )}
-          </div>
+          {/* Input Fields Grid */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+            <div>
+              <label style={{ display: "block", fontSize: "11px", fontWeight: "700", color: "#8a99ad", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Full Name</label>
+              {editing ? (
+                <input
+                  style={{ width: "100%", padding: "12px", borderRadius: "10px", border: "1px solid #334155", backgroundColor: "#0d1624", color: "#ffffff", fontSize: "14px", boxSizing: "border-box", outline: "none" }}
+                  value={data.name}
+                  onChange={(e) => setData({ ...data, name: e.target.value })}
+                  placeholder="Enter your name"
+                />
+              ) : (
+                <div style={{ padding: "12px", backgroundColor: "#0d1624", borderRadius: "10px", color: "#ffffff", fontSize: "14px", border: "1px solid #1a273b" }}>
+                  {data.name || "Not set"}
+                </div>
+              )}
+            </div>
 
-          <div>
-            <label style={{ display: "block", fontSize: "12px", fontWeight: "600", color: "#94a3b8", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Job Title (Admin-only)</label>
-            <div style={{ padding: "12px", backgroundColor: "#152238", borderRadius: "8px", color: "#64748b", fontSize: "14px", border: "1px solid #2a3b55" }}>
-              {data.jobTitle || "Not assigned"}
+            <div>
+              <label style={{ display: "block", fontSize: "11px", fontWeight: "700", color: "#8a99ad", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Phone Number</label>
+              {editing ? (
+                <input
+                  style={{ width: "100%", padding: "12px", borderRadius: "10px", border: "1px solid #334155", backgroundColor: "#0d1624", color: "#ffffff", fontSize: "14px", boxSizing: "border-box", outline: "none" }}
+                  value={data.phone}
+                  onChange={(e) => setData({ ...data, phone: e.target.value })}
+                  placeholder="Enter phone number"
+                />
+              ) : (
+                <div style={{ padding: "12px", backgroundColor: "#0d1624", borderRadius: "10px", color: "#ffffff", fontSize: "14px", border: "1px solid #1a273b" }}>
+                  {data.phone || "Not set"}
+                </div>
+              )}
+            </div>
+
+            <div>
+              <label style={{ display: "block", fontSize: "11px", fontWeight: "700", color: "#8a99ad", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Address</label>
+              {editing ? (
+                <input
+                  style={{ width: "100%", padding: "12px", borderRadius: "10px", border: "1px solid #334155", backgroundColor: "#0d1624", color: "#ffffff", fontSize: "14px", boxSizing: "border-box", outline: "none" }}
+                  value={data.address}
+                  onChange={(e) => setData({ ...data, address: e.target.value })}
+                  placeholder="Enter address"
+                />
+              ) : (
+                <div style={{ padding: "12px", backgroundColor: "#0d1624", borderRadius: "10px", color: "#ffffff", fontSize: "14px", border: "1px solid #1a273b" }}>
+                  {data.address || "Not set"}
+                </div>
+              )}
+            </div>
+
+            <div>
+              <label style={{ display: "block", fontSize: "11px", fontWeight: "700", color: "#8a99ad", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Job Title (Admin-Managed)</label>
+              <div style={{ padding: "12px", backgroundColor: "#080e1a", borderRadius: "10px", color: "#64748b", fontSize: "14px", border: "1px solid #1a273b" }}>
+                {data.jobTitle || "Not assigned"}
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div style={{ marginTop: "24px", display: "flex", gap: "10px" }}>
+        {/* Bottom Action Area */}
+        <div style={{ display: "flex", gap: "10px" }}>
           {editing ? (
             <>
               <button 
                 onClick={save}
-                style={{ flex: 1, backgroundColor: "#2563eb", color: "white", border: "none", padding: "12px", borderRadius: "8px", fontWeight: "600", cursor: "pointer", fontSize: "14px" }}
+                style={{ flex: 1, backgroundColor: "#2563eb", color: "white", border: "none", padding: "14px", borderRadius: "10px", fontWeight: "600", cursor: "pointer", fontSize: "14px", boxShadow: "0 4px 12px rgba(37, 99, 235, 0.4)" }}
               >
                 Save Changes
               </button>
               <button 
                 onClick={() => setEditing(false)}
-                style={{ flex: 1, backgroundColor: "#334155", color: "#cbd5e1", border: "none", padding: "12px", borderRadius: "8px", fontWeight: "600", cursor: "pointer", fontSize: "14px" }}
+                style={{ flex: 1, backgroundColor: "#1e293b", color: "#cbd5e1", border: "none", padding: "14px", borderRadius: "10px", fontWeight: "600", cursor: "pointer", fontSize: "14px" }}
               >
                 Cancel
               </button>
@@ -189,9 +251,9 @@ export default function Profile() {
           ) : (
             <button 
               onClick={() => setEditing(true)}
-              style={{ width: "100%", backgroundColor: "#2563eb", color: "white", border: "none", padding: "12px", borderRadius: "8px", fontWeight: "600", cursor: "pointer", fontSize: "14px" }}
+              style={{ width: "100%", backgroundColor: "#2563eb", color: "white", border: "none", padding: "14px", borderRadius: "10px", fontWeight: "600", cursor: "pointer", fontSize: "14px", boxShadow: "0 4px 12px rgba(37, 99, 235, 0.4)" }}
             >
-              Edit Profile
+              Edit Profile Information
             </button>
           )}
         </div>
