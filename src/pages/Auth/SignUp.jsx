@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { auth, db } from "../../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 
 export default function SignUp() {
   const [email, setEmail] = useState("");
@@ -19,11 +19,23 @@ export default function SignUp() {
     setLoading(true);
     try {
       const cred = await createUserWithEmailAndPassword(auth, email, password);
+
+      // Create base user document
       await setDoc(doc(db, "users", cred.user.uid), {
         empId,
         email,
         role,
       });
+
+      // Part C: Check if HR pre-onboarded this Employee ID
+      const onboardingSnap = await getDoc(doc(db, "onboarding", empId));
+      if (onboardingSnap.exists()) {
+        await setDoc(doc(db, "profiles", cred.user.uid), {
+          ...onboardingSnap.data(),
+          email,
+        }, { merge: true });
+      }
+
       navigate("/dashboard");
     } catch (err) {
       setError(err.message.replace("Firebase: ", ""));
