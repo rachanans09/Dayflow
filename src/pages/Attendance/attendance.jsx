@@ -10,11 +10,12 @@ export default function Attendance() {
   const [status, setStatus] = useState('Checked Out');
   const [loading, setLoading] = useState(false);
 
-  const userId = auth.currentUser ? auth.currentUser.uid : DUMMY_UID;
-
   const fetchAttendance = async () => {
+    const user = auth.currentUser;
+    if (!user) return;
+
     try {
-      const q = query(collection(db, "attendance"), where("uid", "==", userId));
+      const q = query(collection(db, "attendance"), where("uid", "==", user.uid));
       const querySnapshot = await getDocs(q);
       const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
@@ -45,6 +46,9 @@ export default function Attendance() {
   }, []);
 
   const handleAction = async (type) => {
+    const user = auth.currentUser;
+    if (!user) return;
+
     setLoading(true);
     try {
       const newStatus = type === 'Check-In' ? 'Checked In' : 'Checked Out';
@@ -53,7 +57,7 @@ export default function Attendance() {
       setStatus(newStatus);
 
       await addDoc(collection(db, "attendance"), {
-        uid: userId,
+        uid: user.uid,
         type: type,
         timestamp: serverTimestamp(),
         date: new Date().toLocaleDateString('en-GB'),
