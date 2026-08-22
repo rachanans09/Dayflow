@@ -1,15 +1,26 @@
-<<<<<<< HEAD
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
+
+// Auth
 import SignIn from "./pages/Auth/SignIn";
 import SignUp from "./pages/Auth/SignUp";
+
+// Main Dashboard
 import Dashboard from "./pages/Dashboard";
+
+// Profile & Onboarding
 import Profile from "./pages/Profile/Profile";
-import Attendance from "./pages/Attendance/Attendance";
+import OnboardEmployee from "./pages/Profile/OnboardEmployee";
+
+// Attendance & Analytics
+import Attendance from "./pages/Attendance/attendance";
 import Analytics from "./pages/Attendance/Analytics";
+
+// Leaves
 import ApplyLeave from "./pages/Leave/ApplyLeave";
 import ApproveLeave from "./pages/Leave/ApproveLeave";
-import OnboardEmployee from "./pages/Profile/OnboardEmployee";
+
+// Layout Wrapper
 import Layout from "./components/Layout";
 
 export default function App() {
@@ -17,11 +28,11 @@ export default function App() {
     <BrowserRouter>
       <Toaster position="top-right" />
       <Routes>
-        {/* Public Auth Routes */}
+        {/* Public Authentication */}
         <Route path="/" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
 
-        {/* Authenticated Dashboard Shell */}
+        {/* Protected Dashboard Routes */}
         <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
         <Route path="/profile" element={<Layout><Profile /></Layout>} />
         <Route path="/attendance" element={<Layout><Attendance /></Layout>} />
@@ -29,25 +40,10 @@ export default function App() {
         <Route path="/apply-leave" element={<Layout><ApplyLeave /></Layout>} />
         <Route path="/approve-leave" element={<Layout><ApproveLeave /></Layout>} />
         <Route path="/onboard-employee" element={<Layout><OnboardEmployee /></Layout>} />
+
+        {/* Catch-all fallback */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );
 }
-=======
-import React from 'react';
-import './App.css';
-import Profile from './pages/Profile/Profile';
-
-function App() {
-  return (
-    <div className="app-container">
-      <main className="main-content">
-        <Profile />
-      </main>
-    </div>
-  );
-}
-
-export default App;
-
->>>>>>> ef3f85338034776d29fe94672e31f6db312d3fea
