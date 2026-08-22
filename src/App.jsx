@@ -4,6 +4,7 @@ import SignIn from "./pages/Auth/SignIn";
 import SignUp from "./pages/Auth/SignUp";
 import Profile from "./pages/Profile/Profile";
 import AttendanceDashboard from "./pages/Attendance/attendance";
+import AdminAttendance from "./pages/Attendance/AdminAttendance";
 import ApplyLeave from "./pages/Leave/ApplyLeave";
 import ApproveLeave from "./pages/Leave/ApproveLeave";
 
@@ -13,7 +14,9 @@ function Dashboard() {
   return (
     <div style={layoutStyle}>
       <div style={headerStyle}>
-        <h1 style={{ margin: 0, fontSize: "32px", fontWeight: "700" }}>Dayflow HRMS</h1>
+        <h1 style={{ margin: 0, fontSize: "32px", fontWeight: "700" }}>
+          Dayflow HRMS
+        </h1>
         <p style={{ margin: "4px 0 20px 0", color: "#94a3b8" }}>
           Employee Portal & Work Management
         </p>
@@ -25,6 +28,12 @@ function Dashboard() {
             ● Attendance
           </button>
           <button
+            onClick={() => setActiveTab("admin-attendance")}
+            style={tabButtonStyle(activeTab === "admin-attendance")}
+          >
+            🛡️ Admin Attendance
+          </button>
+          <button
             onClick={() => setActiveTab("leave")}
             style={tabButtonStyle(activeTab === "leave")}
           >
@@ -34,9 +43,9 @@ function Dashboard() {
       </div>
 
       <div style={{ maxWidth: "800px", margin: "0 auto" }}>
-        {activeTab === "attendance" ? (
-          <AttendanceDashboard />
-        ) : (
+        {activeTab === "attendance" && <AttendanceDashboard />}
+        {activeTab === "admin-attendance" && <AdminAttendance />}
+        {activeTab === "leave" && (
           <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
             <ApplyLeave />
             <ApproveLeave />
@@ -56,6 +65,7 @@ export default function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/admin-attendance" element={<AdminAttendance />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
